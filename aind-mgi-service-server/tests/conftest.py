@@ -1,5 +1,6 @@
 """Set up fixtures to be used across all test modules."""
 
+import json
 import os
 from pathlib import Path
 
@@ -16,12 +17,12 @@ RESOURCES_DIR = Path(os.path.dirname(os.path.realpath(__file__))) / "resources"
 @pytest.fixture()
 def mock_get_example_response(mocker):
     """Mock example response"""
-    with open(RESOURCES_DIR / "example_response.txt") as f:
-        contents = f.read()
+    with open(RESOURCES_DIR / "example_response.json") as f:
+        contents = json.load(f)
     mock_get = mocker.patch("requests_toolbelt.sessions.BaseUrlSession.get")
     mock_response = Response()
     mock_response.status_code = 200
-    mock_response._content = contents.encode("utf-8")
+    mock_response._content = json.dumps(contents).encode("utf-8")
     mock_get.return_value = mock_response
 
 
@@ -32,14 +33,16 @@ def mock_get_empty_response(mocker):
     mock_get = mocker.patch("requests_toolbelt.sessions.BaseUrlSession.get")
     mock_response = Response()
     mock_response.status_code = 200
-    mock_response._content = "".encode("utf-8")
+    mock_response._content = json.dumps(
+        {"summaryRows": [], "totalCount": 0, "meta": None}
+    ).encode("utf-8")
     mock_get.return_value = mock_response
 
 
 @pytest.fixture(scope="session")
 def get_test_session():
     """Generate a session for testing."""
-    session = BaseUrlSession(base_url="example")
+    session = BaseUrlSession(base_url="http://example.com")
     try:
         yield session
     finally:

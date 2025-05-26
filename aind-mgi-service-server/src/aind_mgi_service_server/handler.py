@@ -1,10 +1,10 @@
 """Module to retrieve data from a backend using a session object"""
 
-import logging
+from typing import List
 
 from requests_toolbelt.sessions import BaseUrlSession
 
-from aind_mgi_service_server.models import Content
+from aind_mgi_service_server.models import MgiContent, MgiSummaryRow
 
 
 class SessionHandler:
@@ -14,27 +14,24 @@ class SessionHandler:
         """Class constructor"""
         self.session = session
 
-    def get_info(self, example_arg: str) -> Content:
+    def get_quick_search_info(self, allele_name: str) -> List[MgiSummaryRow]:
         """
-        Get information from a backend. An example argument is added.
-
+        Get allele info from mgi endpoint
         Parameters
         ----------
-        example_arg : str
+        allele_name : str
 
         Returns
         -------
-        str
-          Contents of a webpage.
+        List[MgiResponse]
 
         """
-
-        logging.debug(f"Sending request for {example_arg}")
-        response = self.session.get("")
+        params = {
+            "queryType": "exactPhrase",
+            "query": allele_name,
+            "submit": "Quick+Search",
+        }
+        response = self.session.get("/quicksearch/alleleBucket", params=params)
         response.raise_for_status()
-        logging.debug(f"Received response for {example_arg}")
-        text = response.text
-        if example_arg == "length":
-            return Content(info=str(len(text)), arg=example_arg)
-        else:
-            return Content(info=text, arg=example_arg)
+        response_model = MgiContent(**response.json())
+        return response_model.summaryRows

@@ -12,7 +12,7 @@ def get_session():
     Yield a session object. This will automatically close the session when
     finished.
     """
-    session = BaseUrlSession(base_url=settings.host)
+    session = BaseUrlSession(base_url=settings.host.unicode_string())
     try:
         yield session
     finally:

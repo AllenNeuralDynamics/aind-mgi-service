@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "aind-mgi-service-server"
-description = "Package to serve data from backend."
+description = "Package to serve data from MGI."
 license = {text = "MIT"}
 requires-python = ">=3.10"
 authors = [
@@ -17,7 +17,8 @@ readme = "README.md"
 dynamic = ["version"]
 
 dependencies = [
-    'requests-toolbelt',  # Used for example. Remove if not needed.
+    'aind-settings-utils>=0.0.3',
+    'requests-toolbelt',
     'pydantic>=2.0',
     'pydantic-settings>=2.0',
     'fastapi[standard]>=0.114.0',
@@ -90,5 +91,5 @@ fail-under = 100
 asyncio_mode="auto"
 asyncio_default_fixture_loop_scope="function"
 env = [
-    "MYENV_HOST=example"
+    "MGI_HOST=http://example.com"
 ]

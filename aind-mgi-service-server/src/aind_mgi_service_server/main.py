@@ -15,17 +15,17 @@ log_level = os.getenv("LOG_LEVEL", "INFO")
 logging.basicConfig(level=log_level)
 
 description = """
-## aind-service-template
+## aind-mgi-service
 
-Service to pull data from example backend.
+Service to pull data from Mouse Genome Informatics database.
 
 """
 
 # noinspection PyTypeChecker
 app = FastAPI(
-    title="aind-service-template",
+    title="aind-mgi-service",
     description=description,
-    summary="Serves data from example backend.",
+    summary="Retrieves MGI information.",
     version=service_version,
 )
 
