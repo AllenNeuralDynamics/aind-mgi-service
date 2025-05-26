@@ -1,6 +1,6 @@
 """Models and schema definitions for backend data structures"""
 
-from typing import Literal
+from typing import Any, List, Literal, Optional
 
 from pydantic import BaseModel, Field
 
@@ -14,8 +14,24 @@ class HealthCheck(BaseModel):
     service_version: str = __version__
 
 
-class Content(BaseModel):
-    """Response model for querying example content"""
+class MgiSummaryRow(BaseModel):
+    """Model of Summary Row dictionary returned"""
 
-    info: str = Field(..., description="Example Info")
-    arg: str = Field(..., description="Argument passed into request")
+    detailUri: Optional[str] = Field(default=None)
+    featureType: Optional[str] = Field(default=None)
+    strand: Optional[str] = Field(default=None)
+    chromosome: Optional[str] = Field(default=None)
+    stars: Optional[str] = Field(default=None)
+    bestMatchText: Optional[str] = Field(default=None)
+    bestMatchType: Optional[str] = Field(default=None)
+    name: Optional[str] = Field(default=None)
+    location: Optional[str] = Field(default=None)
+    symbol: Optional[str] = Field(default=None)
+
+
+class MgiContent(BaseModel):
+    """Model for response from MGI"""
+
+    summaryRows: List[MgiSummaryRow]
+    totalCount: Optional[int] = Field(default=None)
+    meta: Optional[Any] = Field(default=None)

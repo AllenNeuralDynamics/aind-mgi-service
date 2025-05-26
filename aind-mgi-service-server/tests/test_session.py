@@ -13,7 +13,7 @@ class TestSession:
 
         session = next(get_session())
         base_url = session.base_url
-        assert "example" == base_url
+        assert "http://example.com/" == base_url
 
 
 if __name__ == "__main__":

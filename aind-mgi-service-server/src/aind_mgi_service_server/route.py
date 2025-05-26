@@ -1,10 +1,12 @@
 """Module to handle endpoint responses"""
 
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, Path, status
 from requests_toolbelt.sessions import BaseUrlSession
 
 from aind_mgi_service_server.handler import SessionHandler
-from aind_mgi_service_server.models import Content, HealthCheck
+from aind_mgi_service_server.models import HealthCheck, MgiSummaryRow
 from aind_mgi_service_server.session import get_session
 
 router = APIRouter()
@@ -29,20 +31,21 @@ async def get_health() -> HealthCheck:
 
 
 @router.get(
-    "/{example_arg}",
-    response_model=Content,
+    "/allele_info/{allele_name}",
+    response_model=List[MgiSummaryRow],
 )
-async def get_content(
-    example_arg: str = Path(..., examples=["raw", "length"]),
+async def get_allele_info(
+    allele_name: str = Path(..., examples=["Parvalbumin-IRES-Cre", "Pvalb"]),
     session: BaseUrlSession = Depends(get_session),
 ):
     """
-    ## Example content
-    Return either the raw content or the number of characters.
+    ## Allele Info
+    Retrieve MGI allele information.
     """
-    content = SessionHandler(session=session).get_info(example_arg=example_arg)
-    # Adding this for illustrative purposes.
-    if len(content.info) == 0:
+    mgi_summary_rows = SessionHandler(session=session).get_quick_search_info(
+        allele_name=allele_name
+    )
+    if len(mgi_summary_rows) == 0:
         raise HTTPException(status_code=404, detail="Not found")
     else:
-        return content
+        return mgi_summary_rows

@@ -1,18 +1,17 @@
 """Module for settings to connect to backend"""
 
-from pydantic import Field
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from aind_settings_utils.aws import (
+    ParameterStoreAppBaseSettings,
+)
+from pydantic import Field, HttpUrl
+from pydantic_settings import SettingsConfigDict
 
 
-class Settings(BaseSettings):
-    """
-    ### Settings needed to connect to a database or website.
-    We will just connect to an example website.
-    """
+class Settings(ParameterStoreAppBaseSettings):
+    """Settings needed to connect to MGI website"""
 
-    model_config = SettingsConfigDict(env_prefix="MYENV_")
-    host: str = Field(
-        ...,
-        title="Host",
-        description="Host address of example.com",
+    model_config = SettingsConfigDict(env_prefix="MGI_", case_sensitive=False)
+    host: HttpUrl = Field(
+        default="https://www.informatics.jax.org",
+        description="URL for MGI allele information.",
     )
