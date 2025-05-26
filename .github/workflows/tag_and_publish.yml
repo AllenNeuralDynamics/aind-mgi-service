@@ -197,7 +197,7 @@ jobs:
     needs: update_tag
     defaults:
       run:
-        working-directory: ./aind-mgi-service-server
+        working-directory: ./aind-mgi-service-client
     steps:
       - uses: actions/checkout@v4
       - name: Pull latest changes
