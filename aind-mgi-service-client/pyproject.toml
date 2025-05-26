@@ -1,6 +1,6 @@
 [project]
 name = "aind_mgi_service_client"
-version = "0.0.1"
+version = "0.0.2"
 description = "aind-mgi-service"
 authors = [
   {name = "OpenAPI Generator Community",email = "team@openapitools.org"},
