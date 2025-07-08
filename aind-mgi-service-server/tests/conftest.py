@@ -19,24 +19,18 @@ def mock_get_example_response(mocker):
     with open(RESOURCES_DIR / "example_response.json") as f:
         contents = json.load(f)
 
-    # Create a mock response that behaves like httpx.Response
     mock_response = mocker.MagicMock()
     mock_response.status_code = 200
     mock_response.json.return_value = contents
     mock_response.raise_for_status.return_value = None
 
-    # Patch the httpx.AsyncClient.get method
-    mock_get = mocker.patch(
-        "httpx.AsyncClient.get", return_value=mock_response
-    )
+    mock_get = mocker.patch("httpx.AsyncClient.get", return_value=mock_response)
     return mock_get
 
 
 @pytest.fixture()
 def mock_get_empty_response(mocker):
-    """Mock empty string response"""
-
-    # Create a mock response that behaves like httpx.Response
+    """Mock empty response"""
     mock_response = mocker.MagicMock()
     mock_response.status_code = 200
     mock_response.json.return_value = {
@@ -46,10 +40,7 @@ def mock_get_empty_response(mocker):
     }
     mock_response.raise_for_status.return_value = None
 
-    # Patch the httpx.AsyncClient.get method
-    mock_get = mocker.patch(
-        "httpx.AsyncClient.get", return_value=mock_response
-    )
+    mock_get = mocker.patch("httpx.AsyncClient.get", return_value=mock_response)
     return mock_get
 
 
