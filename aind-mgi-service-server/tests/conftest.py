@@ -24,7 +24,9 @@ def mock_get_example_response(mocker):
     mock_response.json.return_value = contents
     mock_response.raise_for_status.return_value = None
 
-    mock_get = mocker.patch("httpx.AsyncClient.get", return_value=mock_response)
+    mock_get = mocker.patch(
+        "httpx.AsyncClient.get", return_value=mock_response
+    )
     return mock_get
 
 
@@ -40,7 +42,9 @@ def mock_get_empty_response(mocker):
     }
     mock_response.raise_for_status.return_value = None
 
-    mock_get = mocker.patch("httpx.AsyncClient.get", return_value=mock_response)
+    mock_get = mocker.patch(
+        "httpx.AsyncClient.get", return_value=mock_response
+    )
     return mock_get
 
 
