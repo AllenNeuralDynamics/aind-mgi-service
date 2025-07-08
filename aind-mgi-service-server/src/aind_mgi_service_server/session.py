@@ -1,19 +1,20 @@
 """Module to handle requests session"""
 
-from requests_toolbelt.sessions import BaseUrlSession
+from typing import AsyncGenerator
+
+import httpx
 
 from aind_mgi_service_server.configs import Settings
 
 settings = Settings()
 
 
-def get_session():
+async def get_session() -> AsyncGenerator[httpx.AsyncClient, None]:
     """
-    Yield a session object. This will automatically close the session when
-    finished.
+    Yield an async session object. This will automatically close the session
+    when finished.
     """
-    session = BaseUrlSession(base_url=settings.host.unicode_string())
-    try:
+    async with httpx.AsyncClient(
+        base_url=settings.host.unicode_string()
+    ) as session:
         yield session
-    finally:
-        session.close()

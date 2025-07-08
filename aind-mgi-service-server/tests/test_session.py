@@ -8,11 +8,11 @@ from aind_mgi_service_server.session import get_session
 class TestSession:
     """Test methods in Session Class"""
 
-    def test_get_session(self):
+    @pytest.mark.asyncio
+    async def test_get_session(self):
         """Tests get_session method"""
-
-        session = next(get_session())
-        base_url = session.base_url
+        session = await get_session().__anext__()
+        base_url = str(session.base_url)
         assert "http://example.com/" == base_url
 
 

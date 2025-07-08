@@ -2,7 +2,7 @@
 
 from typing import List
 
-from requests_toolbelt.sessions import BaseUrlSession
+import httpx
 
 from aind_mgi_service_server.models import MgiContent, MgiSummaryRow
 
@@ -10,13 +10,16 @@ from aind_mgi_service_server.models import MgiContent, MgiSummaryRow
 class SessionHandler:
     """Handle session object to get data"""
 
-    def __init__(self, session: BaseUrlSession):
+    def __init__(self, session: httpx.AsyncClient):
         """Class constructor"""
         self.session = session
 
-    def get_quick_search_info(self, allele_name: str) -> List[MgiSummaryRow]:
+    async def get_quick_search_info(
+        self, allele_name: str
+    ) -> List[MgiSummaryRow]:
         """
-        Get allele info from mgi endpoint
+        Retrieve MGI allele information asynchronously.
+
         Parameters
         ----------
         allele_name : str
@@ -31,7 +34,9 @@ class SessionHandler:
             "query": allele_name,
             "submit": "Quick+Search",
         }
-        response = self.session.get("/quicksearch/alleleBucket", params=params)
+        response = await self.session.get(
+            "/quicksearch/alleleBucket", params=params
+        )
         response.raise_for_status()
         response_model = MgiContent(**response.json())
         return response_model.summaryRows

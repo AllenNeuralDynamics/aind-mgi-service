@@ -2,8 +2,8 @@
 
 from typing import List
 
+import httpx
 from fastapi import APIRouter, Depends, Path, status
-from requests_toolbelt.sessions import BaseUrlSession
 
 from aind_mgi_service_server.handler import SessionHandler
 from aind_mgi_service_server.models import HealthCheck, MgiSummaryRow
@@ -34,15 +34,29 @@ def get_health() -> HealthCheck:
     "/allele_info/{allele_name}",
     response_model=List[MgiSummaryRow],
 )
-def get_allele_info(
-    allele_name: str = Path(..., examples=["Parvalbumin-IRES-Cre", "Pvalb"]),
-    session: BaseUrlSession = Depends(get_session),
+async def get_allele_info(
+    allele_name: str = Path(
+        ...,
+        openapi_examples={
+            "cre_line": {
+                "summary": "Cre line example",
+                "description": "Example using a Cre recombinase line",
+                "value": "Parvalbumin-IRES-Cre",
+            },
+            "gene_symbol": {
+                "summary": "Gene symbol example",
+                "description": "Example using a gene symbol",
+                "value": "Pvalb",
+            },
+        },
+    ),
+    session: httpx.AsyncClient = Depends(get_session),
 ):
     """
     ## Allele Info
     Retrieve MGI allele information.
     """
-    mgi_summary_rows = SessionHandler(session=session).get_quick_search_info(
-        allele_name=allele_name
-    )
+    mgi_summary_rows = await SessionHandler(
+        session=session
+    ).get_quick_search_info(allele_name=allele_name)
     return mgi_summary_rows
