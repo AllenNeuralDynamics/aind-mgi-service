@@ -25,7 +25,8 @@ class TestContentRoute:
         """Tests an empty response"""
 
         response = client.get("/allele_info/NOTHING")
-        assert 404 == response.status_code
+        assert 200 == response.status_code
+        assert [] == response.json()
 
 
 if __name__ == "__main__":

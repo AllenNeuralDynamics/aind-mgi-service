@@ -18,7 +18,7 @@ dynamic = ["version"]
 
 dependencies = [
     'aind-settings-utils>=0.0.3',
-    'requests-toolbelt',
+    "httpx",
     'pydantic>=2.0',
     'pydantic-settings>=2.0',
     'fastapi[standard]>=0.114.0',
