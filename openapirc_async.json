@@ -1,6 +1,7 @@
 {
    "packageName": "aind_mgi_service_async_client",
    "projectName": "aind-mgi-service-async-client",
+   "library": "asyncio",
    "packageVersion": "0.1.1"
 }
 
