@@ -35,7 +35,7 @@ configuration = aind_mgi_service_client.Configuration(
 with aind_mgi_service_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = aind_mgi_service_client.DefaultApi(api_client)
-    allele_name = 'allele_name_example' # str | 
+    allele_name = 'Parvalbumin-IRES-Cre' # str | 
 
     try:
         # Get Allele Info
