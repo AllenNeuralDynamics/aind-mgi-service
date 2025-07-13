@@ -1,4 +1,4 @@
-"""Module for settings to connect to backend"""
+"""Module for settings to connect to MGI backend"""
 
 from aind_settings_utils.aws import (
     ParameterStoreAppBaseSettings,
