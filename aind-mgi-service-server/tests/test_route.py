@@ -1,31 +1,39 @@
 """Test routes"""
 
 import pytest
+from httpx import AsyncClient
+from starlette.testclient import TestClient
 
 
 class TestHealthcheckRoute:
     """Test healthcheck responses."""
 
-    def test_get_health(self, client):
+    def test_get_health(self, client: TestClient):
         """Tests a good response"""
         response = client.get("/healthcheck")
         assert 200 == response.status_code
         assert "OK" == response.json()["status"]
 
 
-class TestContentRoute:
-    """Test responses."""
+@pytest.mark.asyncio
+class TestAlleleInfoRoute:
+    """Test responses for Allele Info."""
 
-    def test_get_200_response(self, client, mock_get_example_response):
+    async def test_get_200_response(
+        self, client: TestClient, mock_async_client_get_pvalb: AsyncClient
+    ):
         """Tests a good response"""
         response = client.get("/allele_info/Parvalbumin-IRES-Cre")
         assert 200 == response.status_code
 
-    def test_get_404_response(self, client, mock_get_empty_response):
+    async def test_get_404_response(
+        self, client: TestClient, mock_async_client_get_nothing: AsyncClient
+    ):
         """Tests an empty response"""
 
         response = client.get("/allele_info/NOTHING")
-        assert 404 == response.status_code
+        assert 200 == response.status_code
+        assert [] == response.json()
 
 
 if __name__ == "__main__":
