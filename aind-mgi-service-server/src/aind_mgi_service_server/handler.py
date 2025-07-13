@@ -2,7 +2,7 @@
 
 from typing import List
 
-import httpx
+from httpx import AsyncClient
 
 from aind_mgi_service_server.models import MgiContent, MgiSummaryRow
 
@@ -10,7 +10,7 @@ from aind_mgi_service_server.models import MgiContent, MgiSummaryRow
 class SessionHandler:
     """Handle session object to get data"""
 
-    def __init__(self, session: httpx.AsyncClient):
+    def __init__(self, session: AsyncClient):
         """Class constructor"""
         self.session = session
 

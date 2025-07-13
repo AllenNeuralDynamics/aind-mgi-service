@@ -3,60 +3,55 @@
 import json
 import os
 from pathlib import Path
+from typing import Any, Generator
 
-import httpx
 import pytest
 from fastapi.testclient import TestClient
+from httpx import URL, AsyncClient
+from pytest_httpx import HTTPXMock
 
 from aind_mgi_service_server.main import app
 
 RESOURCES_DIR = Path(os.path.dirname(os.path.realpath(__file__))) / "resources"
 
 
-@pytest.fixture()
-def mock_get_example_response(mocker):
-    """Mock example response"""
+@pytest.fixture(scope="function")
+async def mock_async_client_get_pvalb(httpx_mock: HTTPXMock) -> AsyncClient:
+    """Generate an async session for testing."""
+
     with open(RESOURCES_DIR / "example_response.json") as f:
         contents = json.load(f)
 
-    mock_response = mocker.MagicMock()
-    mock_response.status_code = 200
-    mock_response.json.return_value = contents
-    mock_response.raise_for_status.return_value = None
-
-    mock_get = mocker.patch(
-        "httpx.AsyncClient.get", return_value=mock_response
-    )
-    return mock_get
-
-
-@pytest.fixture()
-def mock_get_empty_response(mocker):
-    """Mock empty response"""
-    mock_response = mocker.MagicMock()
-    mock_response.status_code = 200
-    mock_response.json.return_value = {
-        "summaryRows": [],
-        "totalCount": 0,
-        "meta": None,
+    base_url = "http://example.com/quicksearch/alleleBucket"
+    base_params = {
+        "queryType": "exactPhrase",
+        "submit": "Quick+Search",
     }
-    mock_response.raise_for_status.return_value = None
-
-    mock_get = mocker.patch(
-        "httpx.AsyncClient.get", return_value=mock_response
-    )
-    return mock_get
+    params = {"query": "Parvalbumin-IRES-Cre"} | base_params
+    httpx_mock.add_response(url=URL(base_url, params=params), json=contents)
+    return AsyncClient(base_url="http://example.com")
 
 
-@pytest.fixture()
-async def get_test_session():
+@pytest.fixture(scope="function")
+async def mock_async_client_get_nothing(httpx_mock: HTTPXMock) -> AsyncClient:
     """Generate an async session for testing."""
-    async with httpx.AsyncClient(base_url="http://example.com") as session:
-        yield session
+
+    base_url = "http://example.com/quicksearch/alleleBucket"
+    base_params = {
+        "queryType": "exactPhrase",
+        "submit": "Quick+Search",
+    }
+    params = {"query": "NOTHING"} | base_params
+    httpx_mock.add_response(
+        url=URL(base_url, params=params),
+        json={"summaryRows": [], "totalCount": 0, "meta": None},
+    )
+    return AsyncClient(base_url="http://example.com")
 
 
-@pytest.fixture(scope="session")
-def client():
+@pytest.fixture
+def client() -> Generator[TestClient, Any, None]:
     """Creating a client for testing purposes."""
+
     with TestClient(app) as c:
         yield c
