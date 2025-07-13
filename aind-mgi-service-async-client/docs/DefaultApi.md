@@ -32,14 +32,14 @@ configuration = aind_mgi_service_async_client.Configuration(
 
 
 # Enter a context with an instance of the API client
-with aind_mgi_service_async_client.ApiClient(configuration) as api_client:
+async with aind_mgi_service_async_client.ApiClient(configuration) as api_client:
     # Create an instance of the API class
     api_instance = aind_mgi_service_async_client.DefaultApi(api_client)
     allele_name = 'Parvalbumin-IRES-Cre' # str | 
 
     try:
         # Get Allele Info
-        api_response = api_instance.get_allele_info(allele_name)
+        api_response = await api_instance.get_allele_info(allele_name)
         print("The response of DefaultApi->get_allele_info:\n")
         pprint(api_response)
     except Exception as e:
