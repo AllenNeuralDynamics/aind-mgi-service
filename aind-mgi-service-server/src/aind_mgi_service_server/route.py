@@ -2,7 +2,7 @@
 
 from typing import List
 
-import httpx
+from httpx import AsyncClient
 from fastapi import APIRouter, Depends, Path, status
 from fastapi_cache.decorator import cache
 
@@ -52,7 +52,7 @@ async def get_allele_info(
             },
         },
     ),
-    session: httpx.AsyncClient = Depends(get_session),
+    session: AsyncClient = Depends(get_session),
 ):
     """
     ## Allele Info
