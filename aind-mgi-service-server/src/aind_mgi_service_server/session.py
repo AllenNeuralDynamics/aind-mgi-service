@@ -2,17 +2,19 @@
 
 from typing import AsyncGenerator
 
-from httpx import AsyncClient
+import httpx
 
 from aind_mgi_service_server.configs import Settings
 
 settings = Settings()
 
 
-async def get_session() -> AsyncGenerator[AsyncClient, None]:
+async def get_session() -> AsyncGenerator[httpx.AsyncClient, None]:
     """
     Yield an async session object. This will automatically close the session
     when finished.
     """
-    async with AsyncClient(base_url=settings.host.unicode_string()) as session:
+    async with httpx.AsyncClient(
+        base_url=settings.host.unicode_string()
+    ) as session:
         yield session
