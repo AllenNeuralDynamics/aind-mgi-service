@@ -1,9 +1,11 @@
 """Module for settings to connect to MGI backend"""
 
+from typing import Optional
+
 from aind_settings_utils.aws import (
     ParameterStoreAppBaseSettings,
 )
-from pydantic import Field, HttpUrl
+from pydantic import Field, HttpUrl, RedisDsn
 from pydantic_settings import SettingsConfigDict
 
 
@@ -15,3 +17,7 @@ class Settings(ParameterStoreAppBaseSettings):
         default="https://www.informatics.jax.org",
         description="URL for MGI allele information.",
     )
+    redis_url: Optional[RedisDsn] = Field(default=None)
+
+
+settings = Settings()

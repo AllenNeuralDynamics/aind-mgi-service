@@ -2,8 +2,9 @@
 
 from typing import List
 
-from fastapi import APIRouter, Depends, Path, status
 from httpx import AsyncClient
+from fastapi import APIRouter, Depends, Path, status
+from fastapi_cache.decorator import cache
 
 from aind_mgi_service_server.handler import SessionHandler
 from aind_mgi_service_server.models import HealthCheck, MgiSummaryRow
@@ -30,6 +31,7 @@ def get_health() -> HealthCheck:
     return HealthCheck()
 
 
+@cache(expire=86400)
 @router.get(
     "/allele_info/{allele_name}",
     response_model=List[MgiSummaryRow],
