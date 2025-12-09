@@ -13,7 +13,6 @@ from pydantic import RedisDsn
 from pytest_httpx import HTTPXMock
 
 from aind_mgi_service_server.configs import settings
-from aind_mgi_service_server.main import app
 
 RESOURCES_DIR = Path(os.path.dirname(os.path.realpath(__file__))) / "resources"
 
@@ -59,6 +58,9 @@ async def mock_async_client_get_nothing(httpx_mock: HTTPXMock) -> AsyncClient:
 @pytest.fixture
 def client() -> Generator[TestClient, Any, None]:
     """Creating a client for testing purposes."""
+
+    # Import moved to be able to mock cache
+    from aind_mgi_service_server.main import app
 
     with TestClient(app) as c:
         yield c
