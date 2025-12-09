@@ -2,13 +2,13 @@
 
 from typing import List
 
-from httpx import AsyncClient
-from fastapi import APIRouter, Depends, Path, status
+from fastapi import APIRouter, Path, status
 from fastapi_cache.decorator import cache
+from httpx import AsyncClient
 
+from aind_mgi_service_server.configs import settings
 from aind_mgi_service_server.handler import SessionHandler
 from aind_mgi_service_server.models import HealthCheck, MgiSummaryRow
-from aind_mgi_service_server.session import get_session
 
 router = APIRouter()
 
@@ -52,13 +52,15 @@ async def get_allele_info(
             },
         },
     ),
-    session: AsyncClient = Depends(get_session),
 ):
     """
     ## Allele Info
     Retrieve MGI allele information.
     """
-    mgi_summary_rows = await SessionHandler(
-        session=session
-    ).get_quick_search_info(allele_name=allele_name)
+    async with AsyncClient(
+        base_url=settings.host.unicode_string(), timeout=30.0
+    ) as session:
+        mgi_summary_rows = await SessionHandler(
+            session=session
+        ).get_quick_search_info(allele_name=allele_name)
     return mgi_summary_rows
