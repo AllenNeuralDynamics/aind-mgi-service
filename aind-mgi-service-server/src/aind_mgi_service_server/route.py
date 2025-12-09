@@ -13,6 +13,18 @@ from aind_mgi_service_server.models import HealthCheck, MgiSummaryRow
 router = APIRouter()
 
 
+@cache(expire=86400)
+async def get_mgi_allele_data(allele_name: str) -> List[MgiSummaryRow]:
+    """Fetch and cache MGI allele information."""
+    async with AsyncClient(
+        base_url=settings.host.unicode_string(), timeout=30.0
+    ) as session:
+        mgi_summary_rows = await SessionHandler(
+            session=session
+        ).get_quick_search_info(allele_name=allele_name)
+    return mgi_summary_rows
+
+
 @router.get(
     "/healthcheck",
     tags=["healthcheck"],
@@ -31,7 +43,6 @@ def get_health() -> HealthCheck:
     return HealthCheck()
 
 
-@cache(expire=86400)
 @router.get(
     "/allele_info/{allele_name}",
     response_model=List[MgiSummaryRow],
@@ -57,10 +68,4 @@ async def get_allele_info(
     ## Allele Info
     Retrieve MGI allele information.
     """
-    async with AsyncClient(
-        base_url=settings.host.unicode_string(), timeout=30.0
-    ) as session:
-        mgi_summary_rows = await SessionHandler(
-            session=session
-        ).get_quick_search_info(allele_name=allele_name)
-    return mgi_summary_rows
+    return await get_mgi_allele_data(allele_name=allele_name)
